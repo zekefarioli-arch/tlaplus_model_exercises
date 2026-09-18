@@ -1,8 +1,10 @@
-# Salida de TLC (el model checker)
+# TLC model checker temporary files
 states/
+.tlacache/
+*.old
 *_TTrace_*.tla
 *_TTrace_*.bin
 *.out
 
-# Herramientas descargadas
-tla2tools.jar
+# Downloaded tools
+*.jar
