@@ -13,4 +13,7 @@ Next == hr' = IF hr # 12 THEN hr + 1 ELSE 1
 
 Spec == Init /\ [][Next]_hr
 
+(* Type invariant ensuring the hour remains within the 12-hour cycle *)
+TypeOK == hr \in (1 .. 12)
+
 =============================================================================
