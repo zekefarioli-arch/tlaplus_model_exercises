@@ -84,4 +84,19 @@ Spec == Init /\ [][Next]_vars
 Termination == <>(\A self \in ProcSet: pc[self] = "Done")
 
 \* END TRANSLATION 
+
+\* Invariants
+TypeOK ==
+    /\ alive \in SUBSET (1 .. 3)
+    /\ flushed \in BOOLEAN
+    /\ status \in {"running", "stopped"}
+    /\ stop_requested \in BOOLEAN
+
+StatusConsistent ==
+    (status = "stopped") => (alive = {} /\ flushed = TRUE)
+
+OrderConsistent ==
+    /\ (1 \in alive => 2 \in alive)
+    /\ (2 \in alive => 3 \in alive)
+
 =============================================================================
