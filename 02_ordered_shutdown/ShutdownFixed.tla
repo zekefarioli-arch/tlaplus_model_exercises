@@ -20,7 +20,7 @@ variables
     stop_requested = FALSE,
     cycles = 0;
 
-process controller = 0
+fair process controller = 0
 begin
     ControllerLoop:
         while cycles < MaxCycles do
@@ -37,7 +37,7 @@ begin
         end while;
 end process;
 
-process worker \in 1..3
+fair process worker \in 1..3
 begin
     WorkerLoop:
         while cycles < MaxCycles do
@@ -85,7 +85,7 @@ begin
 end process;
 
 end algorithm; *)
-\* BEGIN TRANSLATION (chksum(pcal) = "b9b03873" /\ chksum(tla) = "537ae0c1")
+\* BEGIN TRANSLATION (chksum(pcal) = "d92f7da5" /\ chksum(tla) = "365c153f")
 VARIABLES alive, flushed, status, stop_requested, cycles, pc
 
 vars == << alive, flushed, status, stop_requested, cycles, pc >>
@@ -215,7 +215,9 @@ Next == controller \/ operator
            \/ (\E self \in 1..3: worker(self))
            \/ Terminating
 
-Spec == Init /\ [][Next]_vars
+Spec == /\ Init /\ [][Next]_vars
+        /\ WF_vars(controller)
+        /\ \A self \in 1..3 : WF_vars(worker(self))
 
 Termination == <>(\A self \in ProcSet: pc[self] = "Done")
 
@@ -235,5 +237,8 @@ StatusConsistent ==
 OrderConsistent ==
     /\ (1 \in alive => 2 \in alive)
     /\ (2 \in alive => 3 \in alive)
+
+\* Liveness: every stop request ends in a stopped node (needs the fair processes above)
+StopCompletes == stop_requested ~> (status = "stopped")
 
 =============================================================================
